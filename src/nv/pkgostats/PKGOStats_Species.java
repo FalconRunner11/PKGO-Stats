@@ -2,7 +2,7 @@
  * This object class holds data about a single Pokemon species.
  */
 
-package nv.pkgostats.app;
+package nv.pkgostats;
 
 public class PKGOStats_Species {
 	

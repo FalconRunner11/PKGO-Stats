@@ -4,7 +4,7 @@
  * Alternatively, the user can see Pokemon rankings for all species, based on various stats. 
  */
 
-package nv.pkgostats.app;
+package nv.pkgostats;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

@@ -1350,7 +1350,7 @@ public class PKGOStats_Main implements ItemListener, ActionListener, FocusListen
 		PKGOStats_Species tempSpecies;
 		for (int i = 0; i < lines.size(); i++) {
 			data = lines.get(i);
-			tempSpecies = new PKGOStats_Species(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10]);
+			tempSpecies = new PKGOStats_Species(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11]);
 			speciesMasterList.add(tempSpecies);
 		}
 	}

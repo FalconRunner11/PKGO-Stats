@@ -26,6 +26,7 @@ public class PKGOStats_Species {
 	private int speedSeries;
 	private int generation;
 	private boolean isLegendary;
+	private boolean isNerfed;
 	private boolean isMegaEvolution;
 	private int attackPkgo_Base;
 	private int defensePkgo_Base;
@@ -38,7 +39,7 @@ public class PKGOStats_Species {
 	
 	protected PKGOStats_Species(String inc_pokedexNumber, String inc_speciesName, String inc_hpSeries, String inc_attackSeries, String inc_defenseSeries, 
 								String inc_specialAttackSeries, String inc_specialDefenseSeries, String inc_speedSeries, String inc_generation, String inc_isLegendary, 
-								String inc_isMegaEvolution) {
+								String inc_isNerfed, String inc_isMegaEvolution) {
 		pokedexNumber = Integer.parseInt(inc_pokedexNumber);
 		speciesName = inc_speciesName;
 		hpSeries = Integer.parseInt(inc_hpSeries);
@@ -49,6 +50,7 @@ public class PKGOStats_Species {
 		speedSeries = Integer.parseInt(inc_speedSeries);
 		generation = Integer.parseInt(inc_generation);
 		isLegendary = Boolean.parseBoolean(inc_isLegendary);
+		isNerfed = Boolean.parseBoolean(inc_isNerfed);
 		isMegaEvolution = Boolean.parseBoolean(inc_isMegaEvolution);
 		attackPkgo_Base = calculateAttackPkgo_Base();
 		defensePkgo_Base = calculateDefensePkgo_Base();
@@ -109,6 +111,10 @@ public class PKGOStats_Species {
 	
 	protected boolean isLegendary() {
 		return isLegendary;
+	}
+	
+	protected boolean isNerfed() {
+		return isNerfed;
 	}
 	
 	protected boolean isMegaEvolution() {
@@ -194,6 +200,10 @@ public class PKGOStats_Species {
 		
 		result = (int) Math.round(attackModifier * speedModifier);
 		
+		if (isNerfed) {
+			result = (int) Math.round(result * 0.91);
+		}
+		
 		return result;
 	}
 	
@@ -212,11 +222,23 @@ public class PKGOStats_Species {
 		
 		result = (int) Math.round(defenseModifier * speedModifier);
 		
+		if (isNerfed) {
+			result = (int) Math.round(result * 0.91);
+		}
+		
 		return result;
 	}
 	
 	private int calculateStaminaPkgo_Base() {
-		return (int) Math.floor(hpSeries * 1.75 + 50);
+		int result;
+		
+		result = (int) Math.floor(hpSeries * 1.75 + 50);
+		
+		if (isNerfed) {
+			result = (int) Math.round(result * 0.91);
+		}
+		
+		return result;
 	}
 	
 	//-----------------------------------------------------------------//

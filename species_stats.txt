@@ -913,4 +913,4 @@
 806	Blacephalon	53	127	53	151	79	107	7	false	false	false
 807	Zeraora	88	112	75	102	80	143	7	true	false	false
 808	Meltan	46	65	65	55	35	34	7	true	false	false
-809	Melmetal	135	143	143	80	65	34	7	true	false	false
+809	Melmetal	135	143	143	80	65	34	7	true	true	false

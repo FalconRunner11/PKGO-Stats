@@ -18,16 +18,16 @@ public class PKGOStats_Species {
 	
 	private int pokedexNumber;
 	private String speciesName;
-	private int hpSeries;
-	private int attackSeries;
-	private int defenseSeries;
-	private int specialAttackSeries;
-	private int specialDefenseSeries;
-	private int speedSeries;
+	private double hpSeries;
+	private double attackSeries;
+	private double defenseSeries;
+	private double specialAttackSeries;
+	private double specialDefenseSeries;
+	private double speedSeries;
 	private int generation;
 	private boolean isLegendary;
-	private boolean isNerfed;
 	private boolean isMegaEvolution;
+	private int nerfType;
 	private int attackPkgo_Base;
 	private int defensePkgo_Base;
 	private int staminaPkgo_Base;
@@ -39,19 +39,29 @@ public class PKGOStats_Species {
 	
 	protected PKGOStats_Species(String inc_pokedexNumber, String inc_speciesName, String inc_hpSeries, String inc_attackSeries, String inc_defenseSeries, 
 								String inc_specialAttackSeries, String inc_specialDefenseSeries, String inc_speedSeries, String inc_generation, String inc_isLegendary, 
-								String inc_isNerfed, String inc_isMegaEvolution) {
+								String inc_isMegaEvolution, String inc_nerfType) {
 		pokedexNumber = Integer.parseInt(inc_pokedexNumber);
 		speciesName = inc_speciesName;
-		hpSeries = Integer.parseInt(inc_hpSeries);
-		attackSeries = Integer.parseInt(inc_attackSeries);
-		defenseSeries = Integer.parseInt(inc_defenseSeries);
-		specialAttackSeries = Integer.parseInt(inc_specialAttackSeries);
-		specialDefenseSeries = Integer.parseInt(inc_specialDefenseSeries);
-		speedSeries = Integer.parseInt(inc_speedSeries);
+		hpSeries = Double.parseDouble(inc_hpSeries);
+		attackSeries = Double.parseDouble(inc_attackSeries);
+		defenseSeries = Double.parseDouble(inc_defenseSeries);
+		specialAttackSeries = Double.parseDouble(inc_specialAttackSeries);
+		specialDefenseSeries = Double.parseDouble(inc_specialDefenseSeries);
+		speedSeries = Double.parseDouble(inc_speedSeries);
 		generation = Integer.parseInt(inc_generation);
 		isLegendary = Boolean.parseBoolean(inc_isLegendary);
-		isNerfed = Boolean.parseBoolean(inc_isNerfed);
 		isMegaEvolution = Boolean.parseBoolean(inc_isMegaEvolution);
+		nerfType = Integer.parseInt(inc_nerfType);
+		
+//		if (speciesName.equals("Melmetal")) {
+//			isNerfed = false;
+//			hpSeries *= 0.91;
+//			attackSeries *= 0.91;
+//			defenseSeries *= 0.91;
+//			specialAttackSeries *= 0.91;
+//			specialDefenseSeries *= 0.91;
+//		}
+		
 		attackPkgo_Base = calculateAttackPkgo_Base();
 		defensePkgo_Base = calculateDefensePkgo_Base();
 		staminaPkgo_Base = calculateStaminaPkgo_Base();
@@ -81,27 +91,27 @@ public class PKGOStats_Species {
 		return speciesName;
 	}
 	
-	protected int getHpSeries() {
+	protected double getHpSeries() {
 		return hpSeries;
 	}
 	
-	protected int getAttackSeries() {
+	protected double getAttackSeries() {
 		return attackSeries;
 	}
 	
-	protected int getDefenseSeries() {
+	protected double getDefenseSeries() {
 		return defenseSeries;
 	}
 	
-	protected int getSpecialAttackSeries() {
+	protected double getSpecialAttackSeries() {
 		return specialAttackSeries;
 	}
 	
-	protected int getSpecialDefenseSeries() {
+	protected double getSpecialDefenseSeries() {
 		return specialDefenseSeries;
 	}
 	
-	protected int getSpeedSeries() {
+	protected double getSpeedSeries() {
 		return speedSeries;
 	}
 	
@@ -113,8 +123,8 @@ public class PKGOStats_Species {
 		return isLegendary;
 	}
 	
-	protected boolean isNerfed() {
-		return isNerfed;
+	protected int getNerfType() {
+		return nerfType;
 	}
 	
 	protected boolean isMegaEvolution() {
@@ -186,59 +196,139 @@ public class PKGOStats_Species {
 	}
 	
 	private int calculateAttackPkgo_Base() {
-		int result;
-		int attackModifier;
+		double result = 0;
+		double scaledAttack;
 		double speedModifier;
-		int max;
-		int min;
+		double strongAttack;
+		double weakAttack;
 		
-		max = Math.max(attackSeries, specialAttackSeries);
-		min = Math.min(attackSeries, specialAttackSeries);
-		
-		attackModifier = (int) Math.round(2 * ((7.0/8.0) * max + (1.0/8.0) * min));
-		speedModifier = calculate_speedModifier();
-		
-		result = (int) Math.round(attackModifier * speedModifier);
-		
-		if (isNerfed) {
-			result = (int) Math.round(result * 0.91);
+		if (nerfType == 0) {
+			// No nerf
+			
+			strongAttack = Math.max(attackSeries, specialAttackSeries);
+			weakAttack = Math.min(attackSeries, specialAttackSeries);
+			
+			scaledAttack = Math.round(2 * (((7.0/8.0) * strongAttack) + ((1.0/8.0) * weakAttack)));
+			speedModifier = calculate_speedModifier();
+			
+			result = scaledAttack * speedModifier;
+			result = Math.round(result);
 		}
 		
-		return result;
+		else if (nerfType == 1) {
+			// Standard nerf
+			
+			strongAttack = Math.max(attackSeries, specialAttackSeries);
+			weakAttack = Math.min(attackSeries, specialAttackSeries);
+			
+			scaledAttack = Math.round(2 * (((7.0/8.0) * strongAttack) + ((1.0/8.0) * weakAttack)));
+			speedModifier = calculate_speedModifier();
+			
+			result = scaledAttack * speedModifier;
+			result = result * 0.91;
+			result = Math.round(result);
+		}
+		
+		else if (nerfType == 2) {
+			// Melmetal nerf
+			
+			attackSeries *= 0.91;
+			specialAttackSeries *= 0.91;
+			
+			strongAttack = Math.max(attackSeries, specialAttackSeries);
+			weakAttack = Math.min(attackSeries, specialAttackSeries);
+			
+			scaledAttack = Math.round(2 * (((7.0/8.0) * strongAttack) + ((1.0/8.0) * weakAttack)));
+			speedModifier = calculate_speedModifier();
+			
+			result = scaledAttack * speedModifier;
+			result = Math.round(result);
+		}
+		
+		return (int) result;
 	}
 	
 	private int calculateDefensePkgo_Base() {
-		int result;
-		int defenseModifier;
+		double result = 0;
+		double scaledDefense;
 		double speedModifier;
-		int max;
-		int min;
+		double strongDefense;
+		double weakDefense;
 		
-		max = Math.max(defenseSeries, specialDefenseSeries);
-		min = Math.min(defenseSeries, specialDefenseSeries);
-		
-		defenseModifier = (int) Math.round(2 * ((5.0/8.0) * max + (3.0/8.0) * min));
-		speedModifier = calculate_speedModifier();
-		
-		result = (int) Math.round(defenseModifier * speedModifier);
-		
-		if (isNerfed) {
-			result = (int) Math.round(result * 0.91);
+		if (nerfType == 0) {
+			// No nerf
+			
+			strongDefense = Math.max(defenseSeries, specialDefenseSeries);
+			weakDefense = Math.min(defenseSeries, specialDefenseSeries);
+			
+			scaledDefense = Math.round(2 * (((5.0/8.0) * strongDefense) + ((3.0/8.0) * weakDefense)));
+			speedModifier = calculate_speedModifier();
+			
+			result = scaledDefense * speedModifier;
+			result = Math.round(result);
 		}
 		
-		return result;
+		else if (nerfType == 1) {
+			// Standard nerf
+			
+			strongDefense = Math.max(defenseSeries, specialDefenseSeries);
+			weakDefense = Math.min(defenseSeries, specialDefenseSeries);
+			
+			scaledDefense = Math.round(2 * (((5.0/8.0) * strongDefense) + ((3.0/8.0) * weakDefense)));
+			speedModifier = calculate_speedModifier();
+			
+			result = scaledDefense * speedModifier;
+			result = result * 0.91;
+			result = Math.round(result);
+		}
+		
+		else if (nerfType == 2) {
+			// Melmetal nerf
+			
+			defenseSeries *= 0.91;
+			specialDefenseSeries *= 0.91;
+		
+			strongDefense = Math.max(defenseSeries, specialDefenseSeries);
+			weakDefense = Math.min(defenseSeries, specialDefenseSeries);
+			
+			scaledDefense = Math.round(2 * (((5.0/8.0) * strongDefense) + ((3.0/8.0) * weakDefense)));
+			speedModifier = calculate_speedModifier();
+			
+			result = scaledDefense * speedModifier;
+			result = Math.round(result);
+		}
+		
+		return (int) result;
 	}
 	
 	private int calculateStaminaPkgo_Base() {
-		int result;
+		double result = 0;
 		
-		result = (int) Math.floor(hpSeries * 1.75 + 50);
-		
-		if (isNerfed) {
-			result = (int) Math.round(result * 0.91);
+		if (nerfType == 0) {
+			// No nerf
+			
+			result = hpSeries * 1.75 + 50;
+			result = Math.round(result);
 		}
 		
-		return result;
+		else if (nerfType == 1) {
+			// Standard nerf
+			
+			result = hpSeries * 1.75 + 50;
+			result = result * 0.91;
+			result = Math.round(result);
+		}
+		
+		else if (nerfType == 2) {
+			// Melmetal nerf
+			
+			hpSeries *= 0.91;
+			
+			result = hpSeries * 1.75 + 50;
+			result = Math.floor(result);
+		}
+		
+		return (int) result;
 	}
 	
 	//-----------------------------------------------------------------//

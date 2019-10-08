@@ -767,7 +767,7 @@ public class PKGOStats_Main implements ItemListener, ActionListener, FocusListen
 		currentGridY++;
 		constraints.gridx = currentGridX;
 		constraints.gridy = currentGridY;
-		constraints.gridwidth = 8;
+		constraints.gridwidth = 1;
 		constraints.weightx = 1.0;
 		constraints.weighty = 1.0;
 		constraints.anchor = GridBagConstraints.FIRST_LINE_START;
